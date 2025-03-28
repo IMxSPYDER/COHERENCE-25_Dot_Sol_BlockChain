@@ -11,6 +11,8 @@ import Landing from './components/Landing'
 import BenefitsSection from './components/BenefitCard'
 import './app.css'
 import Chatbot from './components/Chatbot';
+import GlowingBackground from './components/GlowingBackground';
+import EcosystemComponent from './components/EcosystemComponent';
 const App = () => {
   const [account, setAccount] = useState(null);
 
@@ -85,15 +87,13 @@ const App = () => {
   
   return (
     <div>
-      {/* <Home/> */}
-      {/* <BenefitCard/> */}
-      {/* <Footer/> */}
+      <GlowingBackground/>
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
       <Landing/>
       <BenefitsSection/>
-      <Footer/>
-      {/* <Card/> */}
       <Chatbot/>
+      <EcosystemComponent/>
+      <Footer/>
     </div>
   )
 }

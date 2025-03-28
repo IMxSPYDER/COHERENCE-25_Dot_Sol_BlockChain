@@ -10,6 +10,7 @@ import Navbar from './components/Navbar'
 import Landing from './components/Landing'
 import BenefitsSection from './components/BenefitCard'
 import './app.css'
+import Chatbot from './components/Chatbot';
 const App = () => {
   const [account, setAccount] = useState(null);
 
@@ -91,6 +92,7 @@ const App = () => {
       <Landing/>
       <BenefitsSection/>
       {/* <Card/> */}
+      <Chatbot/>
     </div>
   )
 }

@@ -4,7 +4,7 @@ import Button from './Button'
 
 const Landing = () => {
   return (
-    <div className='flex justify-center items-center mt-10'>
+    <div className='flex justify-center items-center h-dvh'>
     <div className='flex flex-row items-center justify-center w-10/12'>
         <div className='w-1/2 px-20 flex flex-col gap-5 justify-center'>
         <small className='text-lg text-gray-300'>DISTINCT STYLES, CHOOSE YOUR IDENTITY.</small>

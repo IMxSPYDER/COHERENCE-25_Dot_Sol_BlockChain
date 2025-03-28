@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import contractABI from './web3/abi.json';
-import Navbar from './components/Navbar';
-import Landing from './components/Landing';
-import BenefitsSection from './components/BenefitCard';
+
+
+
+
 // import RegisterForm from "./components/RegisterForm"; // Import the new form component
-import './app.css';
+
 import RegisterPopup from "./components/RegisterPopup";
+import contractABI from './web3/abi.json'
+import Home from './Home'
+import BenefitCard from './components/BenefitCard'
+import Footer from './components/Footer'
+import Navbar from './components/Navbar'
+import Landing from './components/Landing'
+import BenefitsSection from './components/BenefitCard'
+import './app.css'
+import Contact from './components/Contact';
+import ChatbotHome from './components/chatbot/ChatbotHome';
+import ChatbotMessages from './components/chatbot/ChatbotMessages';
+import Chatbot from './components/chatbot/Chatbot';
 
 const App = () => {
   const [account, setAccount] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
-
+  const [page, setPage] = useState("home");
   const contractAddress = '0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A'; // Replace with actual contract address
+
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -73,14 +86,19 @@ const App = () => {
   return (
     <div>
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
+
       {account && !isRegistered ? (
         <RegisterPopup account={account} contractAddress={contractAddress} />
       ) : (
         <>
           <Landing />
           <BenefitsSection />
+          <Contact/>
+          <Chatbot />
+          <Footer/>
         </>
       )}
+
     </div>
   );
 };

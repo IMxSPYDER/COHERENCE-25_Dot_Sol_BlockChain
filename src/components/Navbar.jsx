@@ -15,7 +15,7 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
       <div className="flex items-center gap-2 justify-between w-full md:w-auto">
         <Link
           to="/"
-          className="flex gap-2 items-center justify-between border border-gray-700 rounded-lg px-3 py-2.5 bg-black/80 cursor-pointer"
+          className="flex gap-2 items-center justify-between border border-gray-700 rounded-lg px-3 py-2.5 bg-midnight/80 cursor-pointer"
         > 
           {/* <img src={logo} alt="Logo" className='rounded-[50%] h-[25px] w-[25px]' /> */}
           <span className="font-bold text-white">
@@ -24,7 +24,7 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
         </Link>
 
         {/* Desktop Navigation (Hidden on Small Screens) */}
-      <div className="hidden md:flex space-x-4 border border-gray-700 rounded-lg px-3 py-1 bg-black/80">
+      <div className="hidden md:flex space-x-4  rounded-lg px-3 py-1 bg-midnight/80">
         <Link to="/campaign" className="text-gray-300 p-2 px-3 hover:text-blue-500  font-medium rounded-md">
           All Campaigns
         </Link>

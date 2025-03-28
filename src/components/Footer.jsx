@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/images/logo.png" alt="0xETHDao Logo" width={120} height={30} />
+            {/* <img sr" alt="0xETHDao Logo" width={120} height={30} /> */}
           </Link>
           <nav className="flex items-center gap-6">
             <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">

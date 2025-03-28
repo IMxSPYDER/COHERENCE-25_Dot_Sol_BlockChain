@@ -91,6 +91,7 @@ const App = () => {
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
       <Landing/>
       <BenefitsSection/>
+      <Footer/>
       {/* <Card/> */}
       <Chatbot/>
     </div>

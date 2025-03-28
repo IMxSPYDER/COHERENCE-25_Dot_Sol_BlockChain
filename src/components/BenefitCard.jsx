@@ -1,23 +1,44 @@
+import img1 from "../assets/icon.png";
+import Card from "./Card";
+
 const BenefitsSection = () => {
   const benefits = [
     {
       title: "Access to Cutting-edge Resources",
       description:
         "Gain exclusive access to a curated repository of resources, including research papers and toolkits, to stay ahead of the curve in your field.",
-      icon: "📦",
+      icon: img1,
     },
     {
       title: "Early Access to Opportunities",
       description:
         "Be the first to hear about new opportunities and initiatives within the OxETHDao network, giving you a competitive edge.",
-      icon: "🚀",
+      icon: img1,
     },
     {
       title: "Recognition and Visibility",
       description:
-        "Showcase your expertise and contributions within the OxETHDao community, and visibility for your achievements through awards.",
-      icon: "🌟",
+        "Showcase your expertise and contributions within the OxETHDao community, and gain visibility for your achievements through awards.",
+      icon: img1,
     },
+    {
+      title: "Recognition and Visibility",
+      description:
+        "Showcase your expertise and contributions within the OxETHDao community, and gain visibility for your achievements through awards.",
+      icon: img1,
+    },
+    {
+      title: "Recognition and Visibility",
+      description:
+        "Showcase your expertise and contributions within the OxETHDao community, and gain visibility for your achievements through awards.",
+      icon: img1,
+    },
+    {
+      title: "Recognition and Visibility",
+      description:
+        "Showcase your expertise and contributions within the OxETHDao community, and gain visibility for your achievements through awards.",
+      icon: img1,
+    }
   ];
 
   return (
@@ -27,16 +48,9 @@ const BenefitsSection = () => {
       <p className="text-gray-300 max-w-3xl text-lg mx-auto mb-10">
         As a member of the OxETHDao community, you gain access to a world of exclusive opportunities that empower you to thrive personally and professionally.
       </p>
-      <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {benefits.map((benefit, index) => (
-          <div
-            key={index}
-            className="p-6 rounded-2xl bg-red-400 shadow-lg flex flex-col items-center text-center"
-          >
-            <div className="text-4xl mb-4">{benefit.icon}</div>
-            <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-            <p className="text-gray-400">{benefit.description}</p>
-          </div>
+          <Card key={index} title={benefit.title} description={benefit.description} icon={benefit.icon} />
         ))}
       </div>
     </div>

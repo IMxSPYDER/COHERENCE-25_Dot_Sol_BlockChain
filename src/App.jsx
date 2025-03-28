@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import Landing from './components/Landing'
 import BenefitsSection from './components/BenefitCard'
+import Card from './components/Card'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Navbar/>
       <Landing/>
       <BenefitsSection/>
+      {/* <Card/> */}
     </div>
   )
 }

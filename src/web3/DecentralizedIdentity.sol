@@ -3,11 +3,13 @@ pragma solidity ^0.8.19;
 
 contract DecentralizedIdentity {
     enum Role { USER, INSTITUTION }
-    
+
     struct User {
         address userAddress;
         Role role;
         bool isRegistered;
+        string name;
+        string email;
     }
 
     struct Credential {
@@ -31,7 +33,7 @@ contract DecentralizedIdentity {
     mapping(address => Credential[]) public userCredentials;
     mapping(address => AccessRequest[]) public accessRequests;
 
-    event UserRegistered(address indexed user, Role role);
+    event UserRegistered(address indexed user, string name, string email, Role role);
     event CredentialAdded(address indexed user, string credentialHash);
     event CredentialRequested(address indexed user, address requester, string credentialHash);
     event AccessGranted(address indexed user, address requester, string credentialHash);
@@ -48,9 +50,22 @@ contract DecentralizedIdentity {
         _;
     }
 
-    function register(uint8 _role) public {
-        require(!users[msg.sender].isRegistered, "User already registered!");
-        users[msg.sender] = User(msg.sender, Role(_role), true);
+    // Function to register a user with name, email, and role
+    function registerUser(string memory _name, string memory _email, uint8 _role) public {
+        require(!users[msg.sender].isRegistered, "User already registered.");
+        require(bytes(_name).length > 0, "Name cannot be empty.");
+        require(bytes(_email).length > 0, "Email cannot be empty.");
+        require(_role <= uint8(Role.INSTITUTION), "Invalid role.");
+
+        users[msg.sender] = User({
+            userAddress: msg.sender,
+            role: Role(_role),
+            isRegistered: true,
+            name: _name,
+            email: _email
+        });
+
+        emit UserRegistered(msg.sender, _name, _email, Role(_role));
     }
 
     function getUserRole() public view returns (uint8) {
@@ -96,7 +111,7 @@ contract DecentralizedIdentity {
 
         for (uint256 i = 0; i < accessRequests[msg.sender].length; i++) {
             if (accessRequests[msg.sender][i].requester == requester &&
-                keccak256(abi.encodePacked(accessRequests[msg.sender][i].credentialHash)) ==
+                keccak256(abi.encodePacked(accessRequests[msg.sender][i].credentialHash)) == 
                 keccak256(abi.encodePacked(credentialHash))) {
                 
                 accessRequests[msg.sender][i].isApproved = true;
@@ -110,7 +125,7 @@ contract DecentralizedIdentity {
     function revokeAccess(address requester, string memory credentialHash) public onlyRegistered {
         for (uint256 i = 0; i < accessRequests[msg.sender].length; i++) {
             if (accessRequests[msg.sender][i].requester == requester &&
-                keccak256(abi.encodePacked(accessRequests[msg.sender][i].credentialHash)) ==
+                keccak256(abi.encodePacked(accessRequests[msg.sender][i].credentialHash)) == 
                 keccak256(abi.encodePacked(credentialHash))) {
                 
                 accessRequests[msg.sender][i].isApproved = false;
@@ -124,7 +139,7 @@ contract DecentralizedIdentity {
     function verifyCredential(address user, string memory credentialHash) public onlyInstitution {
         for (uint256 i = 0; i < userCredentials[user].length; i++) {
             if (
-                keccak256(abi.encodePacked(userCredentials[user][i].documentIPFSHash)) ==
+                keccak256(abi.encodePacked(userCredentials[user][i].documentIPFSHash)) == 
                 keccak256(abi.encodePacked(credentialHash))
             ) {
                 userCredentials[user][i].isVerified = true;
@@ -133,6 +148,16 @@ contract DecentralizedIdentity {
             }
         }
         revert("Credential not found");
+    }
+
+    function isUserRegistered(address _user) public view returns (bool) {
+        return users[_user].isRegistered;
+    }
+
+    function getUserDetails(address _user) public view returns (string memory, string memory, uint8, bool) {
+        require(users[_user].isRegistered, "User not registered.");
+        User memory user = users[_user];
+        return (user.name, user.email, uint8(user.role), user.isRegistered);
     }
 
     function getUserCredentials() public view onlyRegistered returns (Credential[] memory) {

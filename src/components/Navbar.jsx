@@ -60,7 +60,7 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
             </button>
           </div>
         ) : (
-          <Button text = {"Connect Wallet"} onClick={connectWallet} >
+          <Button text = {"Connect Wallet"} click={connectWallet} >
             
           </Button>
         )}

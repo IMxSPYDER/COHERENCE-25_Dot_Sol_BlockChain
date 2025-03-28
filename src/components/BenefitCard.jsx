@@ -1,4 +1,5 @@
-import img1 from '../assets/icon.png'
+import img1 from '../assets/icon.png';
+
 const benefits = [
   {
     icon: img1,
@@ -32,25 +33,25 @@ const benefits = [
   }
 ];
 
-export default function BenefitCard() {
+export default function BenefitCard({ theme }) {
   return (
-    <div className="text-white py-16 px-6 text-center">
-      <small className="uppercase text-lg">Benefits of TruChain</small>
-      <h2 className="text-5xl font-bold my-4">Unlock Exclusive Opportunities</h2>
-      <p className="text-gray-300 max-w-3xl text-lg mx-auto mb-10">
+    <div className={`${theme === "dark" ? "text-white" : "text-black"} py-16 px-6 text-center`}>
+      <small className={`${theme === "dark" ? "text-white" : "text-black"} uppercase text-lg`}>Benefits of TruChain</small>
+      <h2 className={`${theme === "dark" ? "text-white" : "text-black"} text-5xl font-bold my-4`}>Unlock Exclusive Opportunities</h2>
+      <p className={`${theme === "dark" ? "text-gray-300" : "text-gray-700"} max-w-3xl text-lg mx-auto mb-10`}>
         As a member of the OxETHDao community, you gain access to a world of exclusive opportunities that empower you to thrive personally and professionally.
       </p>
-    <div className="grid md:grid-cols-3 gap-6 p-10 px-20 text-white w-5/6 mx-auto">
-      {benefits.map((benefit, index) => (
-        <div key={index} className="bg-gray-800 p-6 rounded-3xl shadow-lg text-center ">
-          <div className="flex justify-center mb-4 ">
-            <img src={benefit.icon} alt={benefit.title} className="w-20 h-20 object-contain shadow-lg rounded-lg bg-gray-700 boxshadow" />
+      <div className="grid md:grid-cols-3 gap-6 p-10 px-20 text-white w-5/6 mx-auto">
+        {benefits.map((benefit, index) => (
+          <div key={index} className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-200"} p-6 rounded-3xl shadow-lg text-center`}>
+            <div className="flex justify-center mb-4">
+              <img src={benefit.icon} alt={benefit.title} className="w-20 h-20 object-contain shadow-lg rounded-lg bg-gray-700 boxshadow" />
+            </div>
+            <h3 className={`${theme === "dark" ? "text-white" : "text-black"} text-xl font-semibold mb-2`}>{benefit.title}</h3>
+            <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-600"} text-sm`}>{benefit.description}</p>
           </div>
-          <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-          <p className="text-gray-400 text-sx">{benefit.description}</p>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -45,7 +45,7 @@ const RegisterPopup = ({ account, contractAddress }) => {
       // Redirect based on role
       if (role === "user") {
         console.log(account)
-        navigate("/user-dashboard", { state: { account, contractAddress } });
+        navigate("/user-dashboard", { state: { account, contractAddress, name} });
       } else if (role === "university") {
         navigate("/university-dashboard");
       }

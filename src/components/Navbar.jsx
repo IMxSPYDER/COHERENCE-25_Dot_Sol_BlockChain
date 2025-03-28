@@ -52,7 +52,7 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
         {account ? (
           <div className="flex items-center gap-4">
             <span className="text-gray-300">{formatAccount(account)}</span>
-            <Link to="/dashboard" className="px-4 py-2 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-md">
+            <Link to="/user-dashboard" className="px-4 py-2 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-md">
               Dashboard
             </Link>
             <button onClick={disconnectWallet} className="px-4 cursor-pointer py-2 text-white bg-red-500 hover:bg-red-700 rounded-md">

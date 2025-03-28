@@ -89,7 +89,7 @@ const App = () => {
       <GlowingBackground/>
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
-      {account && !isRegistered ? (
+      {account ? (
         console.log(account),
         <RegisterPopup account={account} contractAddress={contractAddress} />
       ) : (

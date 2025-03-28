@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import logo from "../assets/top.png";
 import { Facebook, Twitter, Instagram } from "lucide-react";
 
 export default function Footer() {
@@ -8,7 +9,10 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <Link to="/" className="flex items-center gap-2">
-            {/* <img sr" alt="0xETHDao Logo" width={120} height={30} /> */}
+            <img src={logo} alt="0xETHDao Logo" width={35} height={40} />
+            <span className="font-bold text-3xl text-white">
+            Tru<span className="text-blue-500">Chain</span>
+          </span>
           </Link>
           <nav className="flex items-center gap-6">
             <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">

@@ -19,6 +19,8 @@ import Contact from './components/Contact';
 import ChatbotHome from './components/chatbot/ChatbotHome';
 import ChatbotMessages from './components/chatbot/ChatbotMessages';
 import Chatbot from './components/chatbot/Chatbot';
+import GlowingBackground from "./components/GlowingBackground";
+import EcosystemComponent from "./components/EcosystemComponent";
 
 const App = () => {
   const [account, setAccount] = useState(null);
@@ -84,6 +86,7 @@ const App = () => {
 
   return (
     <div>
+      <GlowingBackground/>
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
       {account && !isRegistered ? (
@@ -93,6 +96,7 @@ const App = () => {
         <>
           <Landing />
           <BenefitsSection />
+          <EcosystemComponent/>
           <Contact/>
           <Chatbot />
           <Footer/>

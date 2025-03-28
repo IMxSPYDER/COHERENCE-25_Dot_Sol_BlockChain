@@ -144,7 +144,7 @@ export default function UserDashboard({ account }) {
             <h1 className="text-xl font-semibold">Dashboard</h1>
             <button className="flex items-center gap-2 rounded-md border px-3 py-1 text-sm hover:bg-blue-600 cursor-pointer">
               <User className="h-4 w-4" />
-              {user?.name || "User"}
+              {state?.name|| "User"}
             </button>
           </div>
         </header>

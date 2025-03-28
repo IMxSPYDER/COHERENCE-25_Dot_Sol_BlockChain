@@ -15,7 +15,7 @@ export default function ChatbotMessages() {
   ];
 
   return (
-    <div className="w-[350px] mx-auto bg-white/30 backdrop-blur-lg overflow-hidden border h-[75vh] flex flex-col z-50 relative">
+    <div className="w-[350px] mx-auto bg-black/30 backdrop-blur-lg overflow-hidden border h-[75vh] flex flex-col z-50 relative">
       {/* Header */}
       <div className="bg-gradient-to-b from-[#191D37] to-[#3B3F5C] text-white p-5 text-center font-bold z-50 relative">
         Messages

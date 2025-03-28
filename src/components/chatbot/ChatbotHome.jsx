@@ -26,7 +26,7 @@ export default function ChatbotHome() {
   };
 
   return (
-    <div className="w-[350px] mx-auto bg-white/30 backdrop-blur-lg overflow-hidden border h-[75vh] flex flex-col justify-between relative">
+    <div className="w-[350px] mx-auto bg-black/30 backdrop-blur-lg overflow-hidden  h-[75vh] flex flex-col justify-between relative">
       {/* Header */}
       <div className="bg-gradient-to-b from-[#191D37] to-[#3B3F5C] text-white p-5 flex items-center justify-between">
         <span className="text-lg font-bold">Truman</span>
@@ -57,7 +57,7 @@ export default function ChatbotHome() {
       <div className="p-4 border-t flex">
         <input
           type="text"
-          className="w-full p-3 border-2 rounded-l-lg outline-none"
+          className="w-full p-3 border-1 rounded-l-lg outline-none"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}

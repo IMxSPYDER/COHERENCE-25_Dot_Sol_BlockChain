@@ -4,24 +4,24 @@
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "string",
-				"name": "did",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "credentialType",
-				"type": "string"
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "issuer",
+				"name": "requester",
 				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
 			}
 		],
-		"name": "CredentialIssued",
+		"name": "AccessGranted",
 		"type": "event"
 	},
 	{
@@ -29,21 +29,90 @@
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "string",
-				"name": "did",
-				"type": "string"
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "requester",
+				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "string",
-				"name": "credentialType",
+				"name": "credentialHash",
 				"type": "string"
+			}
+		],
+		"name": "AccessRevoked",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
 			},
 			{
 				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
+			}
+		],
+		"name": "CredentialAdded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "requester",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
+			}
+		],
+		"name": "CredentialRequested",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "verifier",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
 			}
 		],
 		"name": "CredentialVerified",
@@ -55,69 +124,38 @@
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "owner",
+				"name": "user",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"internalType": "string",
-				"name": "did",
-				"type": "string"
+				"internalType": "enum DecentralizedIdentity.Role",
+				"name": "role",
+				"type": "uint8"
 			}
 		],
-		"name": "IdentityRegistered",
+		"name": "UserRegistered",
 		"type": "event"
 	},
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_did",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_credentialType",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_credentialHash",
-				"type": "string"
-			}
-		],
-		"name": "issueCredential",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_did",
-				"type": "string"
-			}
-		],
-		"name": "registerIdentity",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
+				"internalType": "address",
 				"name": "",
-				"type": "string"
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
-		"name": "credentials",
+		"name": "accessRequests",
 		"outputs": [
 			{
-				"internalType": "string",
-				"name": "credentialType",
-				"type": "string"
+				"internalType": "address",
+				"name": "requester",
+				"type": "address"
 			},
 			{
 				"internalType": "string",
@@ -125,13 +163,275 @@
 				"type": "string"
 			},
 			{
+				"internalType": "bool",
+				"name": "isApproved",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "certificateId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "dob",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "certificateName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "age",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "documentIPFSHash",
+				"type": "string"
+			}
+		],
+		"name": "addCredential",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAccessRequests",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "requester",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "credentialHash",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "isApproved",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct DecentralizedIdentity.AccessRequest[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUserCredentials",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "certificateId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "dob",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "certificateName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "age",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "documentIPFSHash",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "isVerified",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "isRevoked",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct DecentralizedIdentity.Credential[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUserRole",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
-				"name": "issuer",
+				"name": "requester",
 				"type": "address"
 			},
 			{
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
+			},
+			{
 				"internalType": "bool",
-				"name": "valid",
+				"name": "zkVerification",
+				"type": "bool"
+			}
+		],
+		"name": "grantAccess",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint8",
+				"name": "_role",
+				"type": "uint8"
+			}
+		],
+		"name": "register",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
+			}
+		],
+		"name": "requestCredential",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "requester",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "credentialHash",
+				"type": "string"
+			}
+		],
+		"name": "revokeAccess",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userCredentials",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "certificateId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "dob",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "certificateName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "age",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "documentIPFSHash",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "isVerified",
+				"type": "bool"
+			},
+			{
+				"internalType": "bool",
+				"name": "isRevoked",
 				"type": "bool"
 			}
 		],
@@ -146,21 +446,21 @@
 				"type": "address"
 			}
 		],
-		"name": "identities",
+		"name": "users",
 		"outputs": [
 			{
-				"internalType": "string",
-				"name": "did",
-				"type": "string"
-			},
-			{
 				"internalType": "address",
-				"name": "owner",
+				"name": "userAddress",
 				"type": "address"
 			},
 			{
+				"internalType": "enum DecentralizedIdentity.Role",
+				"name": "role",
+				"type": "uint8"
+			},
+			{
 				"internalType": "bool",
-				"name": "exists",
+				"name": "isRegistered",
 				"type": "bool"
 			}
 		],
@@ -170,25 +470,19 @@
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_did",
-				"type": "string"
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
 			},
 			{
 				"internalType": "string",
-				"name": "_credentialHash",
+				"name": "credentialHash",
 				"type": "string"
 			}
 		],
 		"name": "verifyCredential",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

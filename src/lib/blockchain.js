@@ -1,7 +1,7 @@
 import { ethers } from "ethers"
 import DecentralizedIdentity from "../web3/abi.json" // ABI File
 
-const CONTRACT_ADDRESS = "0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A"
+const CONTRACT_ADDRESS = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
 
 let provider, signer, contract
 

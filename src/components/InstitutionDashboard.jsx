@@ -1,104 +1,200 @@
-import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useState } from "react";
+import { ethers, Interface } from "ethers";
+import DecentralizedIdentity from "../web3/abi.json";
 
-const InstitutionDashboard = ({ contract }) => {
+const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde";
+
+const InstitutionDashboard = () => {
   const [users, setUsers] = useState([]);
-  const [credentials, setCredentials] = useState({});
+  const [search, setSearch] = useState("");
+  const [requested, setRequested] = useState({});
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Fetch all users and their credentials
   useEffect(() => {
-    const loadData = async () => {
+    fetchUsersFromContract();
+  }, []);
+
+  const fetchUsersFromContract = async () => {
+    try {
+      if (!window.ethereum) return alert("Please connect wallet");
+  
       setLoading(true);
-      try {
-        const userList = await contract.getAllUsers();
-        setUsers(userList);
-
-        const creds = {};
-        for (const user of userList) {
-          const userCreds = await contract.getUserCredentials(user);
-          creds[user] = userCreds;
+      setError("");
+  
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        DecentralizedIdentity,
+        signer
+      );
+  
+      const blockNumber = await provider.getBlockNumber();
+  
+      const eventTopic = contract.interface.getEvent("UserRegistered").topicHash;
+  
+      const logs = await provider.getLogs({
+        address: contractAddress,
+        fromBlock: 0,
+        toBlock: blockNumber,
+        topics: [eventTopic],
+      });
+  
+      const allUsers = [];
+  
+      for (const log of logs) {
+        const parsed = contract.interface.parseLog(log);
+        const userAddress = parsed.args[0];
+  
+        try {
+          const userData = await contract.getUserDetails(userAddress);
+  
+          allUsers.push({
+            address: userAddress,
+            name: userData[0],
+            email: userData[1],
+            credentials: [], // You can populate this if needed
+          });
+        } catch (e) {
+          console.warn(`Skipping user ${userAddress}:`, e.message);
         }
-
-        setCredentials(creds);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false);
       }
-    };
+  
+      setUsers(allUsers);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (contract) loadData();
-  }, [contract]);
-
-  const requestCredential = async (user, credentialHash) => {
+  const requestDocument = async (userAddress, hash) => {
     try {
-      const tx = await contract.requestCredential(user, credentialHash);
+      if (!window.ethereum) return alert("Please connect wallet");
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        DecentralizedIdentity.abi,
+        signer
+      );
+
+      const tx = await contract.requestCredential(userAddress, hash);
       await tx.wait();
-      alert('Request sent successfully!');
+
+      setRequested((prev) => ({
+        ...prev,
+        [`${userAddress}_${hash}`]: true,
+      }));
+
+      alert("Access request sent.");
     } catch (err) {
-      console.error(err);
-      alert('Error sending request.');
+      console.error("Error requesting document:", err);
+      alert("Failed to request document");
     }
   };
 
-  const verifyZKP = async (user, credentialHash) => {
-    try {
-      const result = await contract.verifyCredentialZKP(user, credentialHash);
-      if (result) {
-        alert('✅ Credential verified using ZKP');
-      } else {
-        alert('❌ ZKP verification failed');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error verifying credential');
-    }
+  const openModal = (user) => {
+    setSelectedUser(user);
+    setShowModal(true);
   };
 
-  const checkAccess = async (user, credentialHash) => {
-    return await contract.checkCredentialAccess(user, credentialHash);
+  const closeModal = () => {
+    setSelectedUser(null);
+    setShowModal(false);
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-8 grid gap-6">
       <h1 className="text-3xl font-bold mb-4">Institution Dashboard</h1>
-      {loading ? (
-        <p>Loading users and credentials...</p>
-      ) : (
-        users.map((user) => (
-          <div key={user} className="border rounded-2xl p-4 shadow-sm">
-            <h2 className="text-xl font-semibold mb-2">User: {user}</h2>
-            {credentials[user]?.length > 0 ? (
-              <div className="space-y-2">
-                {credentials[user].map((cred, idx) => (
-                  <div key={idx} className="p-3 rounded-lg bg-gray-50 flex justify-between items-center">
-                    <span className="text-sm font-mono truncate max-w-xs">{cred}</span>
-                    <div className="flex gap-2">
-                      <Button onClick={() => requestCredential(user, cred)}>Request</Button>
-                      <Button
-                        variant="secondary"
-                        onClick={async () => {
-                          const access = await checkAccess(user, cred);
-                          if (access) {
-                            verifyZKP(user, cred);
-                          } else {
-                            alert('Access not granted yet.');
-                          }
-                        }}
-                      >
-                        Verify (ZKP)
-                      </Button>
-                    </div>
+
+      <input
+        type="text"
+        placeholder="Search User by Name or Email"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="max-w-md p-2 border border-gray-300 rounded-lg"
+      />
+
+      {loading && <p>Loading users...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <div className="overflow-x-auto mt-6">
+        <table className="min-w-full border border-gray-300 text-sm">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border px-4 py-2">Name</th>
+              <th className="border px-4 py-2">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users
+              .filter(
+                (u) =>
+                  u.name.toLowerCase().includes(search.toLowerCase()) ||
+                  u.email.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((user, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => openModal(user)}
+                >
+                  <td className="border px-4 py-2">{user.name}</td>
+                  <td className="border px-4 py-2">{user.email}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+
+      {showModal && selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md relative">
+            <h2 className="text-xl font-semibold mb-4">
+              {selectedUser.name}'s Credentials
+            </h2>
+            <button
+              className="absolute top-2 right-2 text-gray-600"
+              onClick={closeModal}
+            >
+              ✕
+            </button>
+            <ul className="space-y-3">
+              {selectedUser.credentials.length === 0 && (
+                <p>No credentials found</p>
+              )}
+              {selectedUser.credentials.map((cred, i) => (
+                <li
+                  key={i}
+                  className="flex justify-between items-center bg-gray-100 p-2 rounded-md"
+                >
+                  <div>
+                    <p className="font-medium">{cred.name}</p>
+                    {cred.isVerified && (
+                      <p className="text-green-600 text-xs">Verified</p>
+                    )}
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-500">No credentials found.</p>
-            )}
+                  <div className="relative">
+                    <button
+                      className="px-2 py-1 text-gray-700 hover:bg-gray-300 rounded"
+                      onClick={() =>
+                        requestDocument(selectedUser.address, cred.hash)
+                      }
+                    >
+                      Request
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        ))
+        </div>
       )}
     </div>
   );

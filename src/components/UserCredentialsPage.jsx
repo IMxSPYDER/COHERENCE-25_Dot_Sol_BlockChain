@@ -5,7 +5,7 @@ import { Eye, MoreHorizontal } from "lucide-react";
 import ABI from "../web3/abi.json";
 import Button from "./Button";
 
-const CONTRACT_ADDRESS = "0xF02dC6769176f9737022142b81E058fF1CA0F502";
+const CONTRACT_ADDRESS = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde";
 
 export default function UserCredentialsPage() {
   const [credentials, setCredentials] = useState([]);

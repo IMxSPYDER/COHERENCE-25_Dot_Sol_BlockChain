@@ -10,9 +10,13 @@ import Navbar from './components/Navbar'
 import Landing from './components/Landing'
 import BenefitsSection from './components/BenefitCard'
 import './app.css'
+import Contact from './components/Contact';
+import ChatbotHome from './components/chatbot/ChatbotHome';
+import ChatbotMessages from './components/chatbot/ChatbotMessages';
+import Chatbot from './components/chatbot/Chatbot';
 const App = () => {
   const [account, setAccount] = useState(null);
-
+  const [page, setPage] = useState("home");
   const contractAddress = '0x1ccc2d028308C3178EC0ddA9c670fc4804f47e1c'; // Replace with your contract address
   
 
@@ -90,6 +94,8 @@ const App = () => {
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
       <Landing/>
       <BenefitsSection/>
+      <Contact/>
+      <Chatbot />
       <Footer/>
       {/* <Card/> */}
     </div>

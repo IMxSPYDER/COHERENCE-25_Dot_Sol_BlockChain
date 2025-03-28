@@ -71,3 +71,12 @@ body {
   color: white;
   font-family: "Inter", sans-serif;
 }
+
+.boxshadow{
+  box-shadow: 1px 4px 200px 20px #63b3ed;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+}

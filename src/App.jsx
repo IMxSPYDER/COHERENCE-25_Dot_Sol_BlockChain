@@ -1,7 +1,12 @@
-import React from 'react'
-import { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
+
+
+
+
+// import RegisterForm from "./components/RegisterForm"; // Import the new form component
+
+import RegisterPopup from "./components/RegisterPopup";
 import contractABI from './web3/abi.json'
 import Home from './Home'
 import BenefitCard from './components/BenefitCard'
@@ -14,53 +19,31 @@ import Contact from './components/Contact';
 import ChatbotHome from './components/chatbot/ChatbotHome';
 import ChatbotMessages from './components/chatbot/ChatbotMessages';
 import Chatbot from './components/chatbot/Chatbot';
+
 const App = () => {
   const [account, setAccount] = useState(null);
+  const [isRegistered, setIsRegistered] = useState(false);
   const [page, setPage] = useState("home");
-  const contractAddress = '0x1ccc2d028308C3178EC0ddA9c670fc4804f47e1c'; // Replace with your contract address
-  
+  const contractAddress = '0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A'; // Replace with actual contract address
 
-  // Function to connect wallet and prompt account selection
+
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
-        // Request account permissions to force MetaMask to show account selection
         const accounts = await window.ethereum.request({
           method: 'wallet_requestPermissions',
           params: [{ eth_accounts: {} }]
         }).then(() =>
           window.ethereum.request({ method: 'eth_accounts' })
         );
-        setAccount(accounts[0]); // Set to the first selected account
+        setAccount(accounts[0]); 
+        checkUserRegistration(accounts[0]); // Check if the user is already registered
       } catch (error) {
         console.error("Error connecting to MetaMask", error);
       }
     } else {
       alert('MetaMask not detected. Please install it.');
     }
-  };
-
-  // Check if a wallet is already connected on load
-  useEffect(() => {
-    const checkIfWalletIsConnected = async () => {
-      if (window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-        }
-      }
-    };
-    checkIfWalletIsConnected();
-  }, []);
-
-  const getContract = () => {
-    if (!window.ethereum) {
-      alert("MetaMask not detected");
-      return;
-    }
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = provider.getSigner();
-    return new ethers.Contract(contractAddress, contractABI, signer);
   };
 
   const disconnectWallet = async () => {
@@ -85,21 +68,39 @@ const App = () => {
       console.error("Error disconnecting wallet:", error);
     }
   };
-  
+
+  const checkUserRegistration = async (walletAddress) => {
+    try {
+      if (!window.ethereum) return;
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      const registered = await contract.isUserRegistered(walletAddress);
+      setIsRegistered(registered);
+    } catch (error) {
+      console.error("Error checking user registration:", error);
+    }
+  };
+
   return (
     <div>
-      {/* <Home/> */}
-      {/* <BenefitCard/> */}
-      {/* <Footer/> */}
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
-      <Landing/>
-      <BenefitsSection/>
-      <Contact/>
-      <Chatbot />
-      <Footer/>
-      {/* <Card/> */}
-    </div>
-  )
-}
 
-export default App
+      {account && !isRegistered ? (
+        <RegisterPopup account={account} contractAddress={contractAddress} />
+      ) : (
+        <>
+          <Landing />
+          <BenefitsSection />
+          <Contact/>
+          <Chatbot />
+          <Footer/>
+        </>
+      )}
+
+    </div>
+  );
+};
+
+export default App;

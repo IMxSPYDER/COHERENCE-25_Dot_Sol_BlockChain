@@ -24,13 +24,13 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 flex flex-col items-end z-50">
+    <div className="fixed bottom-4 right-4 flex  flex-col items-end z-50">
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          className=" w-full h-3/4 rounded-lg shadow-lg overflow-hidden"
+          className=" w-full h-3/4  border-2 overflow-hidden border-gray-200  rounded-xl shadow-lg "
         >
 
           <div className="flex-1 overflow-auto">{renderPage()}</div>

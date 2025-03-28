@@ -23,9 +23,8 @@ import Chatbot from './components/chatbot/Chatbot';
 const App = () => {
   const [account, setAccount] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [page, setPage] = useState("home");
-  const contractAddress = '0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A'; // Replace with actual contract address
 
+  const contractAddress = '0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A'; // Replace with actual contract address
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -88,6 +87,7 @@ const App = () => {
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
       {account && !isRegistered ? (
+        console.log(account),
         <RegisterPopup account={account} contractAddress={contractAddress} />
       ) : (
         <>

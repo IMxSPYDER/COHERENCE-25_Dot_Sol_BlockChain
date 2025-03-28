@@ -2,11 +2,14 @@ import { useState, useEffect } from "react"
 import { Shield, User, FileText, Share2, Settings, LogOut, Plus, Check, Clock } from "lucide-react"
 import { CredentialCard } from "./CredentialCard"
 import { RequestCard } from "./RequestCard"
-import { getUserDID, getUserCredentials, getCredentialRequests } from "../lib/blockchain"
-import { Link } from "react-router-dom"
+import { getUserDID, getCredentialRequests } from "../lib/blockchain"
+import { Link, useLocation } from "react-router-dom"
 import AddCredentialModal from "./AddCredentialModal"
+import { ethers } from "ethers"
+import contractABI from "../web3/abi.json" // Make sure ABI is here
 
-export default function UserDashboard() {
+export default function UserDashboard({ account }) {
+  const { state } = useLocation()
   const [user, setUser] = useState(null)
   const [credentials, setCredentials] = useState([])
   const [requests, setRequests] = useState([])
@@ -14,39 +17,71 @@ export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState("credentials")
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const contractAddress = "0xF02dC6769176f9737022142b81E058fF1CA0F502"
+
   const handleModalOpen = () => setIsModalOpen(true)
   const handleModalClose = () => setIsModalOpen(false)
 
-  const refreshCredentials = async () => {
+  const refreshUserData = async () => {
     try {
-      const credentialsData = await getUserCredentials()
+      if (!window.ethereum) throw new Error("Ethereum wallet not found")
+      if (!contractAddress) throw new Error("Smart contract address not provided")
+  
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      const contract = new ethers.Contract(contractAddress, contractABI, signer)
+  
+      const data = await contract.getCompleteUserData()
+  
+      const userData = {
+        name: data[0],
+        email: data[1],
+        role: parseInt(data[2]),
+        isRegistered: data[3],
+      }
+  
+      const credentialsData = data[4].map((c, index) => ({
+        id: index,
+        name: c.name,
+        certificateId: c.certificateId,
+        dob: c.dob,
+        certificateName: c.certificateName,
+        age: c.age.toNumber(),
+        documentIPFSHash: c.documentIPFSHash,
+        isVerified: c.isVerified,
+        isRevoked: c.isRevoked,
+      }))
+  
+      const requestsData = data[5].map((r, index) => ({
+        id: index,
+        requester: r.requester,
+        credentialHash: r.credentialHash,
+        isApproved: r.isApproved,
+      }))
+  
+      setUser(userData)
       setCredentials(credentialsData)
+      setRequests(requestsData)
     } catch (err) {
-      console.error(err)
+      console.error("Error fetching user data:", err)
     }
   }
-
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const didData = await getUserDID()
-        setUser(didData)
-
-        const credentialsData = await getUserCredentials()
-        setCredentials(credentialsData)
-
-        const requestsData = await getCredentialRequests()
-        setRequests(requestsData)
+        await refreshUserData()
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
         setIsLoading(false)
       }
     }
-
+  
     fetchData()
   }, [])
+  
 
   if (isLoading) {
     return (
@@ -63,19 +98,19 @@ export default function UserDashboard() {
   return (
     <div className="flex max-h-screen">
       {/* Sidebar */}
-      <aside className="hidden w-64 flex-col bg-midnight border-r-gray-700 border-r-1  pb-2 z-50  md:flex">
+      <aside className="hidden w-64 flex-col bg-midnight border-r-gray-700 border-r-1 pb-2 z-50 md:flex">
         <div className="flex items-center border-b-1 border-b-gray-700 gap-2 font-bold p-3 text-lg">
           <Shield className="h-6 w-6 text-blue-600" />
           <span>TruChain</span>
         </div>
         <nav className="mt-3 flex flex-col gap-1 p-3">
-          <Link to="/dashboard">
+          <Link to="/user-dashboard">
             <button className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-blue-600 cursor-pointer">
               <User className="h-4 w-4" />
               Identity
             </button>
           </Link>
-          <Link to="/dashboard/credentials">
+          <Link to="/user-dashboard/credentials">
             <button className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-blue-600 cursor-pointer">
               <FileText className="h-4 w-4" />
               Credentials
@@ -104,7 +139,7 @@ export default function UserDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
-        <header className="sticky top-0 z-10  bg-midnight backdrop-blur border-b border-b-gray-700">
+        <header className="sticky top-0 z-10 bg-midnight backdrop-blur border-b border-b-gray-700">
           <div className="flex h-13 items-center justify-between px-6">
             <h1 className="text-xl font-semibold">Dashboard</h1>
             <button className="flex items-center gap-2 rounded-md border px-3 py-1 text-sm hover:bg-blue-600 cursor-pointer">
@@ -114,7 +149,7 @@ export default function UserDashboard() {
           </div>
         </header>
 
-        <div className="container mx-auto px-6 py-6 overflow-auto h-[100%]">
+        <div className="container mx-auto px-6 py-6">
           {/* Identity Overview */}
           <section className="mb-8">
             <h2 className="mb-4 text-2xl font-bold">Your Digital Identity</h2>
@@ -122,7 +157,7 @@ export default function UserDashboard() {
               <h3 className="text-lg font-semibold">Decentralized Identifier (DID)</h3>
               <p className="text-sm text-gray-500">Your unique blockchain identity</p>
               <div className="mt-4 rounded-md bg-white/10 backdrop-blur-xs p-3 font-mono text-sm">
-                {user?.did || "did:blockid:0x1a2b3c4d..."}
+                {state?.account || "did:blockid:0x1a2b3c4d..."}
               </div>
               <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
                 <Check className="h-4 w-4 text-green-500" />
@@ -156,9 +191,10 @@ export default function UserDashboard() {
             <section>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Your Credentials</h2>
-                <button 
-                onClick={handleModalOpen}
-                className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 cursor-pointer">
+                <button
+                  onClick={handleModalOpen}
+                  className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 cursor-pointer"
+                >
                   <Plus className="h-4 w-4" />
                   Add Credential
                 </button>
@@ -176,8 +212,9 @@ export default function UserDashboard() {
                   <h3 className="mb-2 text-lg font-medium">No Credentials Yet</h3>
                   <p className="mb-4 text-gray-500">Add your first credential to start building your identity.</p>
                   <button
-                   onClick={handleModalOpen}
-                   className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 cursor-pointer">
+                    onClick={handleModalOpen}
+                    className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 cursor-pointer"
+                  >
                     <Plus className="h-4 w-4" />
                     Add Your First Credential
                   </button>
@@ -200,7 +237,7 @@ export default function UserDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center rounded-xl border bg-white p-8 text-center shadow-sm">
+                <div className="flex flex-col items-center justify-center rounded-xl border-bg-white/5 bg-white/5 backdrop-blur-xs p-8 text-center shadow-sm">
                   <Clock className="mb-4 h-12 w-12 text-gray-400" />
                   <h3 className="mb-2 text-lg font-medium">No Pending Requests</h3>
                   <p className="text-gray-500">When organizations request access, you'll see them here.</p>
@@ -209,14 +246,10 @@ export default function UserDashboard() {
             </section>
           )}
         </div>
-        
       </main>
-      {/* Modal Component */}
-      <AddCredentialModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        onSuccess={refreshCredentials}
-      />
+
+      {/* Modal */}
+      <AddCredentialModal isOpen={isModalOpen} onClose={handleModalClose} onSuccess={handleModalClose} />
     </div>
   )
 }

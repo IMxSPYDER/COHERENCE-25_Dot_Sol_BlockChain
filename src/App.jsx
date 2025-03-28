@@ -24,7 +24,7 @@ const App = () => {
   const [account, setAccount] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const contractAddress = '0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A'; // Replace with actual contract address
+  const contractAddress = '0xF02dC6769176f9737022142b81E058fF1CA0F502'; // Replace with actual contract address
 
   const connectWallet = async () => {
     if (window.ethereum) {

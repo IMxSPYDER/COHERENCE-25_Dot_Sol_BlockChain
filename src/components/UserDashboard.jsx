@@ -20,7 +20,7 @@ export default function UserDashboard({ account }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const contractAddress = "0xF02dC6769176f9737022142b81E058fF1CA0F502"
+  const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
 
   const handleModalOpen = () => setIsModalOpen(true)
   const handleModalClose = () => setIsModalOpen(false)

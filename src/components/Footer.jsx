@@ -16,19 +16,16 @@ export default function Footer() {
           </Link>
           <nav className="flex items-center gap-6">
             <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-              About
+              Home
             </Link>
             <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-              Membership
+              Features
             </Link>
             <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-              Team
+              About Us
             </Link>
             <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-              Products
-            </Link>
-            <Link to="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-              Partners
+              Contact
             </Link>
           </nav>
           <div className="flex items-center gap-4">
@@ -52,7 +49,7 @@ export default function Footer() {
             </Link>
           </div>
         </div>
-        <div className="text-center text-xs text-gray-500 mt-8">© 2023 0xETHDao All Rights Reserved.</div>
+        <div className="text-center text-xs text-gray-500 mt-8">© 2025 TruChain, All Rights Reserved.</div>
       </div>
     </footer>
   );

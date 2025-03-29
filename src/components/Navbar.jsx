@@ -28,7 +28,7 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
         </Link>
 
         {/* Desktop Navigation (Hidden on Small Screens) */}
-        <div className="hidden md:flex space-x-4  rounded-lg px-3 py-1 bg-transparent ">
+        <div className="hidden md:flex space-x-4 ml-20  rounded-lg px-3 py-1 bg-transparent ">
           <a
             href="#home"
             className="text-gray-300 p-2 px-3 hover:text-blue-500 font-medium rounded-md"

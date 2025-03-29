@@ -8,7 +8,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 bg-gray-200 dark:bg-gray-800 rounded-full flex items-center justify-center"
+      className="p-2  rounded-full flex items-center justify-center"
     >
       {theme === 'light' ? (
         <FaMoon size={24} className="text-gray-800 dark:text-white" />

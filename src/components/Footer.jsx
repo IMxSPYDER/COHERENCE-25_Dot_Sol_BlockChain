@@ -7,7 +7,7 @@ import { ThemeContext } from "../Context/ThemeContext";
 export default function Footer() {
   const { theme, toggleTheme } = useContext(ThemeContext); 
   return (
-    <div className={`border-t border-gray-800 ${theme === "dark" ? "bg-[#0a0a2e] text-white" : "bg-white text-black"}`}>
+    <div className={`border-t border-gray-800 ${theme === "dark" ? " text-white" : " text-black"}`}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <Link to="/" className="flex items-center gap-2">

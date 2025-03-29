@@ -81,29 +81,27 @@ const App = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
-      {/* Glowing background effect */}
-      <GlowingBackground />
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-    <div className={theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}>
-      <GlowingBackground />
-      <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} theme={theme} toggleTheme={toggleTheme} />
+      {/* Glowing background effect updates based on theme */}
+      <GlowingBackground theme={theme} /> 
 
-      {account && !isRegistered ? (
-        <RegisterPopup account={account} contractAddress={contractAddress} />
-      ) : (
-        <>
-          <Landing theme={theme} />
-          <BenefitsSection theme={theme} />
-          <EcosystemComponent theme={theme} />
-          {/* <Contact theme={theme} /> */}
-          <Chatbot theme={theme} />
-          <Footer theme={theme} />
-        </>
-      )}
-    </div>
+      <div className={`min-h-screen ${theme === "dark" ? "text-white" : "text-black"}`}>
+        <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} theme={theme} toggleTheme={toggleTheme} />
+
+        {account && !isRegistered ? (
+          <RegisterPopup account={account} contractAddress={contractAddress} />
+        ) : (
+          <>
+            <Landing theme={theme} />
+            <BenefitsSection theme={theme} />
+            <EcosystemComponent theme={theme} />
+            {/* <Contact theme={theme} /> */}
+            <Chatbot theme={theme} />
+            <Footer theme={theme} />
+          </>
+        )}
+      </div>
     </ThemeContext.Provider>
-    </div>
   );
 };
 

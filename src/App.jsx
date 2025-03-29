@@ -21,12 +21,14 @@ import ChatbotMessages from './components/chatbot/ChatbotMessages';
 import Chatbot from './components/chatbot/Chatbot';
 import GlowingBackground from "./components/GlowingBackground";
 import EcosystemComponent from "./components/EcosystemComponent";
-
+import { ThemeContext } from "./Context/ThemeContext";
 const App = () => {
   const [account, setAccount] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light"); 
   const contractAddress = '0x6f2eEf81Db6955FDb6e8DFfA741e33924190b3cD'; // Replace with actual contract address
+
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -83,26 +85,36 @@ const App = () => {
       console.error("Error checking user registration:", error);
     }
   };
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme); // Save theme in localStorage
+  };
 
   return (
     <div>
-      <GlowingBackground/>
-      <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <GlowingBackground theme={theme} />
 
-      {account ? (
+      <div className={`min-h-screen ${theme === "dark" ? "text-white" : "text-black"}`}>
+        <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} theme={theme} toggleTheme={toggleTheme} />
+
+        {account ? (
         console.log(account),
         <RegisterPopup account={account} contractAddress={contractAddress} />
-      ) : (
-        <>
-          <Landing />
-          <BenefitsSection />
-          <EcosystemComponent/>
-          <Contact/>
-          <Chatbot />
-          <Footer/>
-        </>
-      )}
-
+        ) : (
+          <>
+            <Landing theme={theme} />
+            <BenefitsSection theme={theme} />
+            <EcosystemComponent theme={theme} />
+            <Contact theme={theme} />
+            <Chatbot theme={theme} />
+            <Footer theme={theme} />
+          </>
+        )}
+      </div>
+      
+    </ThemeContext.Provider>
     </div>
   );
 };

@@ -9,6 +9,9 @@ import { ethers } from "ethers"
 import contractABI from "../web3/abi.json" // Make sure ABI is here
 import UserCredentialsPage from "./UserCredentialsPage"
 import RequestedDocuments from "./RequestedDocuments"
+import logo from '../assets/top.png'
+import { useNavigate } from "react-router-dom"
+
 
 export default function UserDashboard({ account }) {
   const { state } = useLocation()
@@ -18,13 +21,37 @@ export default function UserDashboard({ account }) {
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("credentials")
   const [activeBigTab, setActiveBigTab] = useState("identity")
+    const [loading, setLoading] = useState(false);
+    const [wallet, setWallet] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
 
   const handleModalOpen = () => setIsModalOpen(true)
   const handleModalClose = () => setIsModalOpen(false)
+
+  const handleSignOut = async () => {
+    try {
+      if (window.ethereum) {
+        await window.ethereum.request({
+          method: "wallet_revokePermissions",
+          params: [{ eth_accounts: {} }]
+        });
+  
+        localStorage.removeItem("walletConnected");
+        alert("Wallet disconnected! You will need to reconnect manually.");
+  
+        navigate("/"); // Redirect to Home Page
+      } else {
+        alert("MetaMask not detected.");
+      }
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error);
+    }
+  }
 
   const approveRequest = async (requestId) => {
     try {
@@ -58,44 +85,18 @@ export default function UserDashboard({ account }) {
 
   const refreshUserData = async () => {
     try {
-      if (!window.ethereum) throw new Error("Ethereum wallet not found")
-      if (!contractAddress) throw new Error("Smart contract address not provided")
+        if (!window.ethereum) return alert("Please install MetaMask");
+
+        setLoading(true);
   
-      const provider = new ethers.BrowserProvider(window.ethereum)
-      const signer = await provider.getSigner()
-      const contract = new ethers.Contract(contractAddress, contractABI, signer)
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const address = signer.address;
+        setWallet(address);
   
-      const data = await contract.getCompleteUserData()
-  
-      const userData = {
-        name: data[0],
-        email: data[1],
-        role: parseInt(data[2]),
-        isRegistered: data[3],
-      }
-  
-      const credentialsData = data[4].map((c, index) => ({
-        id: index,
-        name: c.name,
-        certificateId: c.certificateId,
-        dob: c.dob,
-        certificateName: c.certificateName,
-        age: c.age.toNumber(),
-        documentIPFSHash: c.documentIPFSHash,
-        isVerified: c.isVerified,
-        isRevoked: c.isRevoked,
-      }))
-  
-      const requestsData = data[5].map((r, index) => ({
-        id: index,
-        requester: r.requester,
-        credentialHash: r.credentialHash,
-        isApproved: r.isApproved,
-      }))
-  
-      setUser(userData)
-      setCredentials(credentialsData)
-      setRequests(requestsData)
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const data = await contract.getUserCredentials();
+        setCredentials(data);
     } catch (err) {
       console.error("Error fetching user data:", err)
     }
@@ -135,8 +136,8 @@ export default function UserDashboard({ account }) {
     <div className="flex max-h-screen h-[100vh]">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col bg-midnight border-r-gray-700 border-r-1 pb-2 z-50 md:flex">
-        <div className="flex items-center border-b-1 border-b-gray-700 gap-2 font-bold p-3 text-lg">
-          <Shield className="h-6 w-6 text-blue-600" />
+        <div className="flex items-center border-b-1 border-b-gray-700 gap-2 font-bold p-4 text-lg">
+          <img src={logo} className="h-5 w-5"/>
           <span>TruChain</span>
         </div>
         <nav className="mt-3 flex flex-col gap-1 p-3">
@@ -166,7 +167,9 @@ export default function UserDashboard({ account }) {
           </button>
         </nav>
         <div className="mt-auto p-3">
-          <button className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-blue-600 cursor-pointer">
+          <button
+          onClick={handleSignOut}
+           className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-blue-600 cursor-pointer">
             <LogOut className="h-4 w-4" />
             Sign Out
           </button>
@@ -176,7 +179,7 @@ export default function UserDashboard({ account }) {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         <header className="sticky top-0 z-10 bg-midnight backdrop-blur border-b border-b-gray-700">
-          <div className="flex h-13 items-center justify-between px-6">
+          <div className="flex h-15 items-center justify-between px-6">
             <h1 className="text-xl font-semibold">Dashboard</h1>
             <button className="flex items-center gap-2 rounded-md border px-3 py-1 text-sm hover:bg-blue-600 cursor-pointer">
               <User className="h-4 w-4" />
@@ -238,11 +241,7 @@ export default function UserDashboard({ account }) {
                 </div>
   
                 {credentials.length > 0 ? (
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {credentials.map((credential) => (
-                      <CredentialCard key={credential.id} credential={credential} />
-                    ))}
-                  </div>
+                    <UserCredentialsPage/>
                 ) : (
                   <div className="flex flex-col items-center justify-center rounded-xl border-bg-white/5 bg-white/5 backdrop-blur-xs p-8 text-center shadow-sm">
                     <FileText className="mb-4 h-12 w-12 text-gray-400" />

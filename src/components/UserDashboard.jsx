@@ -8,6 +8,7 @@ import AddCredentialModal from "./AddCredentialModal"
 import { ethers } from "ethers"
 import contractABI from "../web3/abi.json" // Make sure ABI is here
 import UserCredentialsPage from "./UserCredentialsPage"
+import RequestedDocuments from "./RequestedDocuments"
 
 export default function UserDashboard({ account }) {
   const { state } = useLocation()
@@ -24,6 +25,36 @@ export default function UserDashboard({ account }) {
 
   const handleModalOpen = () => setIsModalOpen(true)
   const handleModalClose = () => setIsModalOpen(false)
+
+  const approveRequest = async (requestId) => {
+    try {
+      if (!window.ethereum) throw new Error("No wallet")
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      const contract = new ethers.Contract(contractAddress, contractABI, signer)
+  
+      const tx = await contract.approveRequest(requestId)
+      await tx.wait()
+      await refreshUserData()
+    } catch (err) {
+      console.error("Error approving request:", err)
+    }
+  }
+  
+  const revokeRequest = async (requestId) => {
+    try {
+      if (!window.ethereum) throw new Error("No wallet")
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      const contract = new ethers.Contract(contractAddress, contractABI, signer)
+  
+      const tx = await contract.revokeRequest(requestId)
+      await tx.wait()
+      await refreshUserData()
+    } catch (err) {
+      console.error("Error revoking request:", err)
+    }
+  }
 
   const refreshUserData = async () => {
     try {
@@ -69,6 +100,8 @@ export default function UserDashboard({ account }) {
       console.error("Error fetching user data:", err)
     }
   }
+
+  
   
 
   useEffect(() => {
@@ -99,7 +132,7 @@ export default function UserDashboard({ account }) {
   }
 
   return (
-    <div className="flex max-h-screen">
+    <div className="flex max-h-screen h-[100vh]">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col bg-midnight border-r-gray-700 border-r-1 pb-2 z-50 md:flex">
         <div className="flex items-center border-b-1 border-b-gray-700 gap-2 font-bold p-3 text-lg">
@@ -235,11 +268,16 @@ export default function UserDashboard({ account }) {
                 </div>
   
                 {requests.length > 0 ? (
-                  <div className="space-y-4">
-                    {requests.map((request) => (
-                      <RequestCard key={request.id} request={request} />
-                    ))}
-                  </div>
+  <div className="space-y-4">
+    {requests.map((request) => (
+      <RequestCard
+        key={request.id}
+        request={request}
+        onApprove={() => approveRequest(request)}
+        onRevoke={() => revokeRequest(request)}
+      />
+    ))}
+  </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center rounded-xl border-bg-white/5 bg-white/5 backdrop-blur-xs p-8 text-center shadow-sm">
                     <Clock className="mb-4 h-12 w-12 text-gray-400" />
@@ -260,11 +298,7 @@ export default function UserDashboard({ account }) {
 
         {
           activeBigTab === "sharing" && (
-            <div className="container mx-auto px-6 py-6">
-              <h2 className="mb-4 text-2xl font-bold">Sharing Your Credentials</h2>
-              <p className="text-sm text-gray-500">Manage how you share your credentials with others.</p>
-              {/* Add your sharing functionality here */}
-            </div>
+            <RequestedDocuments/>
           )
         }
         {

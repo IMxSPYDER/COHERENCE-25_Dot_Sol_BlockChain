@@ -25,8 +25,10 @@ import { ThemeContext } from "./Context/ThemeContext";
 const App = () => {
   const [account, setAccount] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
+
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light"); 
-  const contractAddress = '0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde'; // Replace with actual contract address
+  const contractAddress = '0x6f2eEf81Db6955FDb6e8DFfA741e33924190b3cD'; // Replace with actual contract address
+
 
   const connectWallet = async () => {
     if (window.ethereum) {

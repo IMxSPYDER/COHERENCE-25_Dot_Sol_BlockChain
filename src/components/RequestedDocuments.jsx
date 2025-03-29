@@ -3,10 +3,10 @@ import { ethers } from "ethers"
 import { Check, XCircle } from "lucide-react"
 import contractABI from "../web3/abi.json"
 
-export default function RequestedDocuments({ account }) {
+export default function RequestedDocuments({ account, onAccessRevoked }) {
   const [requests, setRequests] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
+  const contractAddress = "0x6f2eEf81Db6955FDb6e8DFfA741e33924190b3cD"
 
   const fetchRequests = async () => {
     try {
@@ -62,8 +62,18 @@ export default function RequestedDocuments({ account }) {
         request.credentialHash
       )
       await tx.wait()
+
+      // Update the local state to reflect that access has been revoked
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req.id === request.id ? { ...req, isApproved: false } : req
+        )
+      )
+
+      // Trigger the parent callback to notify about revoked access
+      onAccessRevoked(request.credentialHash, false);
+
       alert("Access Revoked")
-      fetchRequests()
     } catch (err) {
       console.error("Revoke Access Error:", err)
     }
@@ -85,7 +95,10 @@ export default function RequestedDocuments({ account }) {
       ) : (
         <div className="space-y-4">
           {requests.map((request) => (
-            <div key={request.id} className="flex items-center justify-between bg-white/5 backdrop-blur-xs p-4 rounded-xl shadow-sm">
+            <div
+              key={request.id}
+              className="flex items-center justify-between bg-white/5 backdrop-blur-xs p-4 rounded-xl shadow-sm"
+            >
               <div>
                 <p className="text-sm text-gray-400">Requester:</p>
                 <p className="font-medium">{request.requester}</p>

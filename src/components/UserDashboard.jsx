@@ -28,7 +28,7 @@ export default function UserDashboard({ account }) {
 
   const navigate = useNavigate()
 
-  const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
+  const contractAddress = "0x6f2eEf81Db6955FDb6e8DFfA741e33924190b3cD"
 
   const handleModalOpen = () => setIsModalOpen(true)
   const handleModalClose = () => setIsModalOpen(false)

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import DecentralizedIdentityABI from "../web3/abi.json";
 
-const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde";
+const contractAddress = "0x6f2eEf81Db6955FDb6e8DFfA741e33924190b3cD";
 
 const InstitutionDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -13,10 +13,9 @@ const InstitutionDashboard = () => {
   const [requested, setRequested] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
-
+  
   useEffect(() => {
     fetchUsers();
-    listenToEvents();
   }, []);
 
   const fetchUsers = async () => {
@@ -79,12 +78,13 @@ const InstitutionDashboard = () => {
         signer
       );
 
-      const [, , , , creds, requests] = await contract.getUserData(user.address);
+      const [, , , , creds, requests, ageVerified] = await contract.getUserData(user.address);
 
+      // Mark which credential is already requested
       const requestMap = {};
       requests.forEach((req) => {
         if (req.requester === signer.address) {
-          requestMap[req.credentialHash] = req.isApproved ? "granted" : "requested";
+          requestMap[req.credentialHash] = req.isApproved;
         }
       });
 
@@ -98,7 +98,12 @@ const InstitutionDashboard = () => {
           isRevoked: cred.isRevoked,
         }))
       );
-      setSelectedUser(user);
+      
+      // Store if the user has verified that they are 18 or older
+      setSelectedUser({ ...user, ageVerified });
+
+      console.log(selectedUser)
+
       setShowModal(true);
     } catch (err) {
       console.error("Error loading credentials:", err);
@@ -123,47 +128,13 @@ const InstitutionDashboard = () => {
 
       setRequested((prev) => ({
         ...prev,
-        [hash]: "requested", // pending approval
+        [hash]: false, // pending approval
       }));
 
       alert("Access request sent");
     } catch (err) {
       console.error("Error requesting:", err);
       alert("Request failed");
-    }
-  };
-
-  const listenToEvents = async () => {
-    try {
-      if (!window.ethereum) return;
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(
-        contractAddress,
-        DecentralizedIdentityABI,
-        signer
-      );
-
-      contract.on("AccessGranted", (user, requester, hash) => {
-        if (requester === signer.address) {
-          setRequested((prev) => ({
-            ...prev,
-            [hash]: "granted",
-          }));
-        }
-      });
-
-      contract.on("AccessRevoked", (user, requester, hash) => {
-        if (requester === signer.address) {
-          setRequested((prev) => ({
-            ...prev,
-            [hash]: "revoked",
-          }));
-        }
-      });
-    } catch (err) {
-      console.error("Error listening to events:", err);
     }
   };
 
@@ -213,14 +184,15 @@ const InstitutionDashboard = () => {
         </tbody>
       </table>
 
+      {/* Modal */}
       {showModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-midnight p-6 rounded-lg w-full max-w-md relative">
             <h2 className="text-xl font-semibold mb-4">
               {selectedUser.name}'s Credentials
             </h2>
             <button
-              className="absolute top-2 right-2 text-gray-600"
+              className="absolute top-2 right-2 text-gray-700 cursor-pointer"
               onClick={() => setShowModal(false)}
             >
               ✕
@@ -233,9 +205,7 @@ const InstitutionDashboard = () => {
                   className="flex justify-between items-center bg-gray-700 p-2 rounded"
                 >
                   <div>
-                    <p className="font-medium text-white">
-                      {cred.certificateName}
-                    </p>
+                    <p className="font-medium">{cred.certificateName}</p>
                     {cred.isVerified && (
                       <p className="text-green-600 text-xs">Verified</p>
                     )}
@@ -251,17 +221,22 @@ const InstitutionDashboard = () => {
                       >
                         Request
                       </button>
-                    ) : requested[cred.hash] === "granted" ? (
-                      <p className="text-green-500 text-xs">Access Granted</p>
-                    ) : requested[cred.hash] === "revoked" ? (
-                      <p className="text-red-500 text-xs">Access Not Granted</p>
+                    ) : requested[cred.hash] ? (
+                      <p className="text-green-600 text-xs">Access Granted</p>
                     ) : (
-                      <p className="text-yellow-400 text-xs">Requested</p>
+                      <p className="text-yellow-600 text-xs">Requested</p>
                     )}
                   </div>
                 </li>
               ))}
             </ul>
+
+            {/* Display Age Verification */}
+            {/* {selectedUser.ageVerified ? (
+              <p className="mt-4 text-green-600">Age Verified: 18+</p>
+            ) : (
+              <p className="mt-4 text-red-600">Age Verification Pending</p>
+            )} */}
           </div>
         </div>
       )}

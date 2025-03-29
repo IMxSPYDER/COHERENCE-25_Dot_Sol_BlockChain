@@ -1,11 +1,11 @@
 import React from 'react'
-import img1 from '../assets/landing.png'
+import img1 from '../assets/img.png'
 import Button from './Button'
 import bars from '../assets/bars.png'
 
 const Landing = ({theme}) => {
   return (
-    <div className={`flex justify-center items-center mt-10 min-h-screen ${theme === "dark" ? "text-white" : "text-black"}`}>
+    <div className={`flex justify-around items-center mt-10 min-h-screen ${theme === "dark" ? "text-white" : "text-black"}`}>
         {/* <img src={bars} alt="" className='absolute top-0 w-full opacity-5 bg-no-repeat' /> */}
     <div className='flex flex-col md:flex-row items-center  justify-center md:w-11/12 w-full'>
         <div className='md:w-1/2 md:gap-5 h-full w-full px-20 flex flex-col gap-10 justify-center'>
@@ -25,8 +25,8 @@ const Landing = ({theme}) => {
         {/* <Button  text = {"Get Connected"}/> */}
         </div>
 
-        <div className='md:w-1/2 w-full md:m-0 mt-10 flex items-center justify-center'>
-            <img src={img1} alt="" />
+        <div className='md:w-1/2 w-full md:m-0 mt-10 flex items-center justify-center '>
+            <img src={img1}  alt="" />
         </div>
     </div>
     </div>

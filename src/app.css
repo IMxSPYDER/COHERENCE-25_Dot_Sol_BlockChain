@@ -72,8 +72,12 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 .boxshadow{
-  box-shadow: 1px 4px 200px 20px #63b3ed;
+  box-shadow: 0px 0px 100px 0px #63b3ed;
 }
 
 .image-container {

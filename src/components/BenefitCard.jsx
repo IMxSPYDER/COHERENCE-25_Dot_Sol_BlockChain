@@ -1,48 +1,54 @@
-import img1 from '../assets/icon.png'
+import img1 from '../assets/1.png'
+import img2 from '../assets/2.png'
+import img3 from '../assets/3.png'
+import img4 from '../assets/4.png'
+import img5 from '../assets/5.png'
+import img6 from '../assets/6.png'
+
 const benefits = [
   {
     icon: img1,
-    title: "Access to Cutting-edge Resources",
-    description: "Gain exclusive access to a curated repository of resources, including research papers and toolkits, to stay ahead of the curve in your field."
+    title: " Self-Sovereign Identity (SSI)",
+    description: "A user-friendly interface where individuals can manage their digital identity, view issued credentials, track verification requests, and control access to their personal data."
   },
   {
-    icon: img1,
-    title: "Early Access to Opportunities",
-    description: "Be the first to hear about new opportunities, and initiatives within the OxETHDao network, giving you a competitive edge."
+    icon: img2,
+    title: "Zero-Knowledge Proofs (ZKP)",
+    description: "Enable users to verify specific attributes (e.g., “I am over 18”) without revealing full details (e.g., birthdate). This enhances privacy while maintaining trust."
   },
   {
-    icon: img1,
-    title: "Recognition and Visibility",
-    description: "Showcase your expertise and contributions within the OxETHDao community, and visibility for your achievements through awards."
+    icon: img3,
+    title: "Interoperability with Other DID Standards",
+    description: "Support for multiple decentralized identity protocols (e.g., W3C DID, Hyperledger Indy, Sovrin, etc.), ensuring seamless integration across various blockchain ecosystems."
   },
   {
-    icon: img1,
-    title: "Networking Opportunities",
-    description: "Connect with a diverse community of industry experts, thought leaders, and online forums, valuable relationships and collaborations."
+    icon: img4,
+    title: "Smart Contract-Based Identity Verification",
+    description: "Use blockchain-powered smart contracts to automate and secure identity verification, reducing fraud and eliminating intermediaries."
   },
   {
-    icon: img1,
-    title: "Project Collaboration",
-    description: "Collaborate on innovative projects and initiatives within the OxETHDao ecosystem, creativity of the community to drive meaningful change."
+    icon: img5,
+    title: "Revocable & Expiring Credentials",
+    description: "Allow issuers to revoke or set expiration dates for credentials, ensuring outdated or compromised credentials don’t remain in use."
   },
   {
-    icon: img1,
-    title: "Governance Participation",
-    description: "Participate in the governance process of OxETHDao, decision-making of the organization through voting rights."
+    icon: img6,
+    title: "Decentralized Login",
+    description: "Users can log in without relying on traditional passwords, using decentralized authentication methods like Web3 wallets or cryptographic key pairs."
   }
 ];
 
 export default function BenefitCard() {
   return (
-    <div className="text-white py-16 px-6 text-center">
+    <div className="text-white py-16 px-6 text-center" id='features'>
       <small className="uppercase text-lg">Benefits of TruChain</small>
       <h2 className="text-5xl font-bold my-4">Unlock Exclusive Opportunities</h2>
       <p className="text-gray-300 max-w-3xl text-lg mx-auto mb-10">
-        As a member of the OxETHDao community, you gain access to a world of exclusive opportunities that empower you to thrive personally and professionally.
+        As a member of the TruChain community, you gain access to a world of exclusive opportunities that empower you to thrive personally and professionally.
       </p>
     <div className="grid md:grid-cols-3 gap-6 p-10 px-20 text-white w-5/6 mx-auto">
       {benefits.map((benefit, index) => (
-        <div key={index} className="bg-gray-800 p-6 rounded-3xl shadow-lg text-center ">
+        <div key={index} className="bg-gray-800 p-6 rounded-3xl shadow-lg text-center inset">
           <div className="flex justify-center mb-4 ">
             <img src={benefit.icon} alt={benefit.title} className="w-20 h-20 object-contain shadow-lg rounded-lg bg-gray-700 boxshadow" />
           </div>

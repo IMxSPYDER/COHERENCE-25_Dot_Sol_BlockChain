@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Contact() {
   return (
-    <div className="h-full flex flex-col m-20 text-white">
+    <div className="h-full flex flex-col m-20 text-white" id="contact">
       {/* Main Section */}
       <main className="flex-grow flex items-center justify-center px-4">
         <div className="max-w-3xl w-full text-center space-y-6">
@@ -16,7 +16,7 @@ export default function Contact() {
           {/* Subscribe Form */}
           <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-2 md:mx-auto md:max-w-md">
             <input
-              type="email"
+              type="email" 
               placeholder="Enter your mail"
               className="w-full flex-1 rounded-md border border-gray-600 px-4 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-600 focus:outline-none"
             />

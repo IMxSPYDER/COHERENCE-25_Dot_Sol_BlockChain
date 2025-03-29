@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const GlowingBackground = () => {
+const GlowingBackground = ({ theme }) => {
   const [glows, setGlows] = useState([]);
 
   useEffect(() => {
@@ -21,14 +21,20 @@ const GlowingBackground = () => {
     generateGlows();
     const interval = setInterval(generateGlows, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [theme]); // Theme added as dependency, now it updates when theme changes
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-gray-900">
+    <div
+      className={`fixed inset-0 -z-10 overflow-hidden transition-colors duration-500 ${
+        theme === "dark" ? "bg-gray-900" : "bg-white"
+      }`}
+    >
       {glows.map((glow) => (
         <div
           key={glow.id}
-          className="absolute bg-blue-500 rounded-full opacity-40 animate-pulse"
+          className={`absolute rounded-full opacity-40 animate-pulse ${
+            theme === "dark" ? "bg-blue-500" : "bg-blue-500"
+          }`}
           style={{
             top: glow.top,
             left: glow.left,

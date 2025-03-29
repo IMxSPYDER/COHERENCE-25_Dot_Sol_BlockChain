@@ -6,7 +6,7 @@ import contractABI from "../web3/abi.json"
 export default function RequestedDocuments({ account }) {
   const [requests, setRequests] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const contractAddress = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
+  const contractAddress = "0x6f2eEf81Db6955FDb6e8DFfA741e33924190b3cD"
 
   const fetchRequests = async () => {
     try {

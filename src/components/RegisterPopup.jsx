@@ -35,16 +35,29 @@ const RegisterPopup = ({ account, contractAddress }) => {
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
   
+
+      // 🔥 Check if user already registered
+      const isRegistered = await contract.isUserRegistered(account);
+      if (isRegistered) {
+        alert("You are already registered! Redirecting to login...");
+        navigate("/login"); // Redirect to login page
+        return;
+      }
+      
+
       // Pass the numerical role instead of the string
       const tx = await contract.registerUser(name, email, roleMapping[role], { from: account });
       await tx.wait();
+
+      
   
       alert("Registration successful!");
       setIsOpen(false); // Close popup after successful registration
 
       // Redirect based on role
       if (role === "user") {
-        navigate("/user-dashboard", { state: { account, contractAddress } });
+        console.log(account)
+        navigate("/user-dashboard", { state: { account, contractAddress, name} });
       } else if (role === "university") {
         navigate("/university-dashboard");
       }

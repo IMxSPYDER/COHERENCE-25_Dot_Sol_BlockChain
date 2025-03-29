@@ -5,7 +5,7 @@ import { ethers } from "ethers"
 import axios from "axios"
 import CONTRACT_ABI from "../web3/abi.json"
 
-const CONTRACT_ADDRESS = "0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A"
+const CONTRACT_ADDRESS = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
 
 // ❗️ In production, move these API keys to server-side functions
 const PINATA_API_KEY = "c12515a4241830355897"

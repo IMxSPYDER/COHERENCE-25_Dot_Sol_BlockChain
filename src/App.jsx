@@ -25,9 +25,8 @@ import EcosystemComponent from "./components/EcosystemComponent";
 const App = () => {
   const [account, setAccount] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [page, setPage] = useState("home");
-  const contractAddress = '0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A'; // Replace with actual contract address
 
+  const contractAddress = '0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde'; // Replace with actual contract address
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -90,7 +89,8 @@ const App = () => {
       <GlowingBackground/>
       <Navbar account={account} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
-      {account && !isRegistered ? (
+      {account ? (
+        console.log(account),
         <RegisterPopup account={account} contractAddress={contractAddress} />
       ) : (
         <>

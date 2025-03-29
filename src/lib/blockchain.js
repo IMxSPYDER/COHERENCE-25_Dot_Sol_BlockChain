@@ -1,21 +1,23 @@
 import { ethers } from "ethers"
 import DecentralizedIdentity from "../web3/abi.json" // ABI File
 
-const CONTRACT_ADDRESS = "0x574a7d6492D7634b215aBAbD2Fd241DC9233CF3A"
+const CONTRACT_ADDRESS = "0xBdF2492d91bf0A83f1a10311d8000Eda2032cBde"
 
 let provider, signer, contract
 
 export const connectWallet = async () => {
-  if (window.ethereum) {
-    provider = new ethers.providers.Web3Provider(window.ethereum)
-    await provider.send("eth_requestAccounts", [])
-    signer = provider.getSigner()
-    contract = new ethers.Contract(CONTRACT_ADDRESS, DecentralizedIdentity, signer)
-    return signer.getAddress()
-  } else {
-    throw new Error("MetaMask not found")
+    if (window.ethereum) {
+      provider = new ethers.BrowserProvider(window.ethereum)
+      await provider.send("eth_requestAccounts", [])
+      signer = await provider.getSigner() // ✅ Await here
+      contract = new ethers.Contract(CONTRACT_ADDRESS, DecentralizedIdentity, signer)
+      const address = await signer.getAddress() // ✅ No error now
+      return address
+    } else {
+      throw new Error("MetaMask not found")
+    }
   }
-}
+  
 
 export const getUserDID = async () => {
   const address = await connectWallet()

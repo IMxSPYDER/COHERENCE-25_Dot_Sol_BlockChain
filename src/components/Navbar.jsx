@@ -9,13 +9,13 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
   const formatAccount = (address) => `${address.slice(0, 3)}...${address.slice(-4)}`;
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-4 bg-midnight   shadow-[0_5px_10px_rgba(41,32,138,_0.7)]  pb-5 z-50">
+    <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-4 bg-cyan-950/20 backdrop-blur-3xl  border-b-1 border-b-gray-700  pb-5 z-50">
       
       {/* Logo Section */}
-      <div className="flex items-center gap-2 justify-between w-full md:w-auto">
+      <div className=" z-100 flex items-center gap-2 justify-between w-full md:w-auto ">
         <Link
           to="/"
-          className="flex gap-2 items-center justify-between border border-gray-700 rounded-lg px-3 py-2.5 bg-midnight/80 cursor-pointer"
+          className="flex gap-2 items-center justify-between border bg-cyan-950/20 backdrop-blur-3xl border-gray-700 rounded-lg px-3 py-2.5  cursor-pointer"
         > 
           <img src={logo} alt="Logo" className='rounded-[50%] h-[20px] w-[19px]' />
           <span className="font-bold text-white">
@@ -24,9 +24,9 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
         </Link>
 
         {/* Desktop Navigation (Hidden on Small Screens) */}
-      <div className="hidden md:flex space-x-4  rounded-lg px-3 py-1 bg-midnight/80">
+      <div className="hidden md:flex space-x-4  rounded-lg px-3 py-1 bg-transparent ">
         <Link to="/campaign" className="text-gray-300 p-2 px-3 hover:text-blue-500  font-medium rounded-md">
-          All Campaigns
+          Our Services
         </Link>
         <Link to="/blogs" className="text-gray-300 p-2 px-3 hover:text-blue-500 font-medium rounded-md">
           Blogs
@@ -35,7 +35,7 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
           About Us
         </Link>
         <Link to="" className="text-gray-300 p-2 px-3 hover:text-blue-500 font-medium rounded-md">
-          Settings
+          Pricing
         </Link>
       </div>
 
@@ -48,11 +48,11 @@ const Navbar = ({ account, connectWallet, disconnectWallet }) => {
       
 
       {/* Desktop Right-Side Buttons (Hidden on Small Screens) */}
-      <div className="hidden md:flex items-center space-x-6">
+      <div className=" z-100 hidden md:flex items-center space-x-6">
         {account ? (
           <div className="flex items-center gap-4">
             <span className="text-gray-300">{formatAccount(account)}</span>
-            <Link to="/dashboard" className="px-4 py-2 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-md">
+            <Link to="/user-dashboard" className="px-4 py-2 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-md">
               Dashboard
             </Link>
             <button onClick={disconnectWallet} className="px-4 cursor-pointer py-2 text-white bg-red-500 hover:bg-red-700 rounded-md">

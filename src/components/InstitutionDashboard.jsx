@@ -13,7 +13,7 @@ const InstitutionDashboard = () => {
   const [requested, setRequested] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
-
+  
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -78,7 +78,7 @@ const InstitutionDashboard = () => {
         signer
       );
 
-      const [, , , , creds, requests] = await contract.getUserData(user.address);
+      const [, , , , creds, requests, ageVerified] = await contract.getUserData(user.address);
 
       // Mark which credential is already requested
       const requestMap = {};
@@ -98,7 +98,12 @@ const InstitutionDashboard = () => {
           isRevoked: cred.isRevoked,
         }))
       );
-      setSelectedUser(user);
+      
+      // Store if the user has verified that they are 18 or older
+      setSelectedUser({ ...user, ageVerified });
+
+      console.log(selectedUser)
+
       setShowModal(true);
     } catch (err) {
       console.error("Error loading credentials:", err);
@@ -149,35 +154,35 @@ const InstitutionDashboard = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <table className="min-w-full border border-gray-300 rounded-2xl overflow-hidden shadow-lg">
-  <thead className="bg-blue-800 text-white">
-    <tr>
-      <th className="px-6 py-3 text-left text-sm font-semibold">Name</th>
-      <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
-    </tr>
-  </thead>
-  <tbody className="bg-white divide-y divide-gray-200">
-    {users
-      .filter(
-        (u) =>
-          u.name.toLowerCase().includes(search.toLowerCase()) ||
-          u.email.toLowerCase().includes(search.toLowerCase())
-      )
-      .map((user, i) => (
-        <tr
-          key={i}
-          className="hover:bg-blue-50 cursor-pointer transition duration-150 ease-in-out"
-          onClick={() => openModal(user)}
-        >
-          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            {user.name}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-            {user.email}
-          </td>
-        </tr>
-      ))}
-  </tbody>
-</table>
+        <thead className="bg-blue-800 text-white">
+          <tr>
+            <th className="px-6 py-3 text-left text-sm font-semibold">Name</th>
+            <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {users
+            .filter(
+              (u) =>
+                u.name.toLowerCase().includes(search.toLowerCase()) ||
+                u.email.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((user, i) => (
+              <tr
+                key={i}
+                className="hover:bg-blue-50 cursor-pointer transition duration-150 ease-in-out"
+                onClick={() => openModal(user)}
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {user.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                  {user.email}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
 
       {/* Modal */}
       {showModal && selectedUser && (
@@ -225,6 +230,13 @@ const InstitutionDashboard = () => {
                 </li>
               ))}
             </ul>
+
+            {/* Display Age Verification */}
+            {/* {selectedUser.ageVerified ? (
+              <p className="mt-4 text-green-600">Age Verified: 18+</p>
+            ) : (
+              <p className="mt-4 text-red-600">Age Verification Pending</p>
+            )} */}
           </div>
         </div>
       )}

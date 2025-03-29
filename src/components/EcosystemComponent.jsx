@@ -3,7 +3,7 @@ import rock from '../assets/rock.png'
 
 const EcosystemComponent = () => {
   return (
-    <div className="text-white py-16 px-8 md:px-10 mx-auto flex flex-col md:flex-row items-center justify-between w-4/5">
+    <div className="text-white py-16 px-8 md:px-10 mx-auto flex flex-col md:flex-row items-center justify-between w-4/5 h-dvh" id="about-us">
       <div className="md:w-1/2">
         <p className="text-blue-400 uppercase text-sx">FUTURE OF DECENTRALIZED IDENTITY</p>
         <h1 className="text-4xl uppercase leading-14 md:text-5xl font-bold mt-2">

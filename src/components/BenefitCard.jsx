@@ -34,7 +34,7 @@ const benefits = [
 
 export default function BenefitCard() {
   return (
-    <div className="text-white py-16 px-6 text-center">
+    <div className="text-white py-16 px-6 text-center" id='features'>
       <small className="uppercase text-lg">Benefits of TruChain</small>
       <h2 className="text-5xl font-bold my-4">Unlock Exclusive Opportunities</h2>
       <p className="text-gray-300 max-w-3xl text-lg mx-auto mb-10">

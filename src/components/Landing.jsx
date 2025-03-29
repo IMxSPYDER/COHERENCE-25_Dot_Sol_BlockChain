@@ -5,7 +5,7 @@ import bars from '../assets/bars.png'
 
 const Landing = () => {
   return (
-    <div className='flex justify-center items-center mt-10  min-h-screen'>
+    <div className='flex justify-center items-center mt-10  min-h-screen' id='home'>
         {/* <img src={bars} alt="" className='absolute top-0 w-full opacity-5 bg-no-repeat' /> */}
     <div className='flex flex-col md:flex-row items-center  justify-center md:w-11/12 w-full'>
         <div className='md:w-1/2 md:gap-5 h-full w-full px-20 flex flex-col gap-10 justify-center'>
